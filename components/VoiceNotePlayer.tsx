@@ -2,15 +2,17 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Pause, Mic, Sparkles, Volume2 } from "lucide-react";
+import { Play, Pause, Mic, Sparkles, Volume2, Heart } from "lucide-react";
 import { APP_CONFIG } from "@/data/config";
+import { VOICE_LYRICS } from "@/data/voice";
 
 export default function VoiceNotePlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [duration, setDuration] = useState("0:45");
-  const [currentTime, setCurrentTime] = useState("0:00");
+  const [currentTimeSec, setCurrentTimeSec] = useState(0);
+  const [activeLyricId, setActiveLyricId] = useState(1);
+  const [duration, setDuration] = useState("0:46");
+  const [formattedTime, setFormattedTime] = useState("0:00");
   const [progress, setProgress] = useState(0);
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -19,15 +21,27 @@ export default function VoiceNotePlayer() {
     const audio = new Audio(APP_CONFIG.voiceAudioPath);
     audioRef.current = audio;
 
+    const handleLoadedMetadata = () => {
+      if (audio.duration && !isNaN(audio.duration)) {
+        const m = Math.floor(audio.duration / 60);
+        const s = Math.floor(audio.duration % 60);
+        setDuration(`${m}:${s < 10 ? "0" : ""}${s}`);
+      }
+    };
+
     const handleEnded = () => {
       setIsPlaying(false);
       setProgress(0);
-      setCurrentTime("0:00");
+      setCurrentTimeSec(0);
+      setFormattedTime("0:00");
+      if (timerRef.current) clearInterval(timerRef.current);
     };
 
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
     audio.addEventListener("ended", handleEnded);
 
     return () => {
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
       audio.removeEventListener("ended", handleEnded);
       audio.pause();
       if (timerRef.current) clearInterval(timerRef.current);
@@ -45,24 +59,47 @@ export default function VoiceNotePlayer() {
       try {
         await audioRef.current.play();
         setIsPlaying(true);
-      } catch {
-        // Fallback simulation mode if voice.mp3 is not yet recorded/added
-        setIsPlaying(true);
-        setToastMsg("🎙️ Playing voice note simulation (Drop voice.mp3 in /public/audio)");
-        setTimeout(() => setToastMsg(null), 3500);
 
-        let sec = 0;
+        timerRef.current = setInterval(() => {
+          if (!audioRef.current) return;
+          const current = audioRef.current.currentTime;
+          setCurrentTimeSec(current);
+
+          const m = Math.floor(current / 60);
+          const s = Math.floor(current % 60);
+          setFormattedTime(`${m}:${s < 10 ? "0" : ""}${s}`);
+
+          const total = audioRef.current.duration || 46;
+          setProgress((current / total) * 100);
+
+          // Find synchronized lyric
+          const match = [...VOICE_LYRICS].reverse().find((l) => current >= l.timeSec);
+          if (match) {
+            setActiveLyricId(match.id);
+          }
+        }, 250);
+      } catch (err) {
+        // Fallback simulation if autoplay blocked or audio issues
+        setIsPlaying(true);
+        let sec = currentTimeSec;
         timerRef.current = setInterval(() => {
           sec += 1;
-          const mins = Math.floor(sec / 60);
-          const secs = sec % 60;
-          setCurrentTime(`${mins}:${secs < 10 ? "0" : ""}${secs}`);
-          setProgress((sec / 45) * 100);
+          setCurrentTimeSec(sec);
+          const m = Math.floor(sec / 60);
+          const s = sec % 60;
+          setFormattedTime(`${m}:${s < 10 ? "0" : ""}${s}`);
+          setProgress((sec / 46) * 100);
 
-          if (sec >= 45) {
+          const match = [...VOICE_LYRICS].reverse().find((l) => sec >= l.timeSec);
+          if (match) {
+            setActiveLyricId(match.id);
+          }
+
+          if (sec >= 46) {
             setIsPlaying(false);
             setProgress(0);
-            setCurrentTime("0:00");
+            setCurrentTimeSec(0);
+            setFormattedTime("0:00");
             if (timerRef.current) clearInterval(timerRef.current);
           }
         }, 1000);
@@ -77,45 +114,31 @@ export default function VoiceNotePlayer() {
 
   return (
     <div className="w-full flex flex-col items-center my-4">
-      {/* Toast Notice */}
-      <AnimatePresence>
-        {toastMsg && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="mb-4 px-3 py-1.5 rounded-full glass-card border border-rose-deep/40 text-[11px] text-blush font-poppins text-center"
-          >
-            {toastMsg}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Voice Player Pod */}
       <div className="w-full rounded-3xl glass-card-rose p-6 border border-pink-soft/30 backdrop-blur-2xl shadow-glow text-center relative overflow-hidden">
         {/* Top Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-2xl bg-white/10 text-rose-400">
               <Mic className="w-4 h-4" />
             </div>
             <div className="text-left">
               <span className="text-[10px] font-poppins uppercase tracking-wider text-pink-soft block">
-                Recorded for you
+                Harmonized for Yashi
               </span>
               <span className="font-playfair text-sm font-semibold text-white">
-                Sweetie's Voice Note 🎙️
+                Ham Tere Pyaar Main 🎙️
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-poppins text-gold-accent">
-            <Volume2 className="w-3 h-3" /> 45s
+            <Volume2 className="w-3 h-3" /> {duration}
           </div>
         </div>
 
         {/* Animated Waveform Visualizer */}
-        <div className="flex items-center justify-center gap-1.5 h-24 my-4 px-2">
+        <div className="flex items-center justify-center gap-1.5 h-20 my-3 px-2">
           {waveformBars.map((baseHeight, idx) => {
             const isPassed = (idx / waveformBars.length) * 100 <= progress;
 
@@ -150,8 +173,8 @@ export default function VoiceNotePlayer() {
         </div>
 
         {/* Progress Bar & Time */}
-        <div className="flex items-center justify-between text-[11px] font-poppins text-pink-soft/70 px-1 mb-5">
-          <span>{currentTime}</span>
+        <div className="flex items-center justify-between text-[11px] font-poppins text-pink-soft/70 px-1 mb-4">
+          <span>{formattedTime}</span>
           <span>{duration}</span>
         </div>
 
@@ -169,13 +192,50 @@ export default function VoiceNotePlayer() {
           )}
         </motion.button>
 
-        {/* Dedicated Message Below */}
-        <p className="font-poppins text-xs sm:text-sm text-blush/90 font-medium mt-6 leading-relaxed">
-          "Sweetie, ek chhota sa message sirf tumhare liye 🎧"
-        </p>
-        <p className="font-hindi text-xs text-gold-accent mt-0.5">
-          हेडफ़ोन लगा लो और सुनो ✨
-        </p>
+        {/* Synchronized Singing Lyrics Display */}
+        <div className="mt-6 pt-4 border-t border-white/10 text-center">
+          <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-poppins text-pink-soft mb-3">
+            <Sparkles className="w-3 h-3 text-gold-accent" />
+            <span>Voice Note Lyrics • Harshit for Sweetie</span>
+          </div>
+
+          <div className="space-y-2.5 max-h-48 overflow-y-auto px-1 text-left">
+            {VOICE_LYRICS.map((line) => {
+              const isCurrent = activeLyricId === line.id && isPlaying;
+
+              return (
+                <motion.div
+                  key={line.id}
+                  animate={{
+                    scale: isCurrent ? 1.03 : 0.98,
+                    opacity: isCurrent ? 1 : 0.45,
+                  }}
+                  transition={{ duration: 0.25 }}
+                  className={`p-2.5 rounded-2xl transition-all border ${
+                    isCurrent
+                      ? "bg-rose-deep/30 border-pink-soft/50 shadow-glow"
+                      : "bg-white/5 border-transparent"
+                  }`}
+                >
+                  <p
+                    className={`font-playfair text-sm leading-snug ${
+                      isCurrent ? "text-white font-bold" : "text-blush/70"
+                    }`}
+                  >
+                    "{line.hinglish}"
+                  </p>
+                  <p
+                    className={`font-hindi text-xs mt-0.5 ${
+                      isCurrent ? "text-gold-accent font-medium" : "text-gold-accent/40"
+                    }`}
+                  >
+                    {line.hindi}
+                  </p>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
