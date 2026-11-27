@@ -1,53 +1,105 @@
-export type LetterLanguage = "all" | "english" | "hinglish" | "hindi";
+export type LetterLanguage = "all" | "hinglish" | "hindi" | "special";
 
 export interface LoveLetter {
   id: string;
   title: string;
-  language: "english" | "hinglish" | "hindi";
+  hindiTitle?: string;
+  language: "hinglish" | "hindi" | "special";
   date: string;
+  badge?: string;
+  preview: string;
   body: string;
-  preview?: string;
 }
 
 export const letters: LoveLetter[] = [
   {
-    id: "letter-1",
-    title: "Pehla Letter",
+    id: "timeline-letter-1",
+    title: "Pehli Mulaqaat • Vishal Mega Mart",
+    hindiTitle: "विशाल मेगा मार्ट वाली पहली मुलाक़ात 🌸",
     language: "hinglish",
-    date: "12 Nov, 2026",
-    preview: "Pata nahi kaise shuru karun, lekin tumhare saath baat karke...",
+    date: "12 Nov 2026",
+    badge: "First Sight ✨",
+    preview: "Vishal Mega Mart me jab pehli baar dekha tha, sach me bohot cute lag rahi thi...",
     body: `Hey Yashi (Sweetie),
 
-Pata nahi kaise shuru karun, lekin tumhare saath baat karke din achha ho jata hai. Tumhari smile, tumhari baatein, aur tumhara pagalpan, sab kuch bahut special hai.
+Vishal Mega Mart me jab mile the... jab maine tumko pehli baar dekha tha, sach me bohot cute lag rahi thi tum. 
 
-Main bas chahta hoon ki tum hamesha khush raho. Ye chhoti si website meri taraf se tumhare liye ek chhota sa surprise hai.
+Pata nahi us pal dil me kya hua tha, par tumhari wo masoom si smile aur tumhara andaz mere dil ko chhu gaya. 
+
+I really like you, Sweetie! Sach me, bohot zyada. 💖
 
 - Tumhara Harshit ❤️`,
   },
   {
-    id: "letter-2",
-    title: "दिल की बात",
-    language: "hindi",
-    date: "25 March, 2024",
-    preview: "कुछ लोग ज़िंदगी में ऐसे आते हैं जिनसे मिलकर सब कुछ खूबसूरत लगने लगता है...",
-    body: `प्यारी यशी,
+    id: "timeline-letter-2",
+    title: "First Time in VIP Restaurant",
+    hindiTitle: "तुम्हें पिज़्ज़ा खाते देखना और वो प्यारी आँखें 🍕",
+    language: "hinglish",
+    date: "VIP Restaurant Date",
+    badge: "Pizza & Eyes 🍕",
+    preview: "VIP Restaurant me first time gaye the saath me, seeing you eating pizza and with your lovely eyes...",
+    body: `My Dearest Sweetie,
 
-कुछ लोग ज़िंदगी में ऐसे आते हैं जिनसे मिलकर सब कुछ खूबसूरत लगने लगता है। तुम भी उन्हीं में से हो। तुम्हारी हँसी मेरे दिन की सबसे अच्छी बात है।
+First time VIP restaurant gaye the saath me... seeing you eating pizza and looking into your lovely eyes was the sweetest feeling in the world. 🍕
 
-मैं नहीं जानता कल क्या होगा, पर इतना जानता हूँ कि तुम्हारे बिना सब अधूरा लगता है। हमेशा मुस्कुराती रहना, स्वीटी। ❤️`,
+Tum jis tarah baatein karte karte pizza enjoy kar rahi thi aur tumhari wo pyari aankhein... main bas dekhta hi reh gaya. 
+
+Wo date mere dil ke hamesha sabse kareeb rahegi. ❤️
+
+- Harshit ✨`,
   },
   {
-    id: "letter-3",
-    title: "Just Like That",
-    language: "english",
-    date: "10 April, 2024",
-    preview: "You make ordinary days feel like little celebrations...",
+    id: "timeline-letter-3",
+    title: "Annual Function Memories",
+    hindiTitle: "एनुअल फंक्शन और वो ख़ास अहसास 🌟",
+    language: "hinglish",
+    date: "Annual Function",
+    badge: "Special Bond 🌺",
+    preview: "Annual function me jaakar you feel like haan bohot pyaari ho tum, I really want you in my daily life...",
     body: `Dear Yashi,
 
-You make ordinary days feel like little celebrations. Thank you for being you: kind, funny, and wonderfully real.
+Annual function me jaakar feel hua ki haan... bohot pyaari ho tum! 
 
-If I could, I'd bottle your laughter and keep it with me forever.
+Tumhari presence har cheez ko itna bright aur beautiful bana deti hai. Tabhi dil ne kaha ki I really want you in my daily life, Yashi. 
 
-Always yours, in whatever way you let me be.`,
+Tum meri zindagi ka wo hissa ho jiske bina sab adhoora lagta hai. 🌸
+
+- Harshit 💫`,
+  },
+  {
+    id: "timeline-letter-4",
+    title: "Dil Ki Baatein",
+    hindiTitle: "मेरे दिल की सबसे सच्ची बात 💖",
+    language: "hindi",
+    date: "Dil Se Dil Tak",
+    badge: "I Like You ❤️",
+    preview: "I like you, Yashi... sach me, tum mere liye bohot zyada special ho...",
+    body: `यशी (स्वीटी),
+
+I like you, Yashi. Sach me dil se bol raha hoon.
+
+Tum mere liye kitni special ho, shayad main shabdon me poora na keh paun. Jab tum muskurati ho, toh lagta hai sab theek hai. 
+
+Bas yahi dua hai ki tum hamesha mere saath aisi hi khush raho. Mere dil ki har dhadkan me tumhara hi naam hai. 💖
+
+- सिर्फ तुम्हारा, हर्षित ✨`,
+  },
+  {
+    id: "timeline-letter-5",
+    title: "Making This Surprise For You",
+    hindiTitle: "ये ख़ास सरप्राइज सिर्फ तुम्हारे लिए 🎁",
+    language: "special",
+    date: "Right Now & Forever",
+    badge: "Forever Yours 💍",
+    preview: "Ye website sirf tumhare chehre par smile laane ke liye banayi hai taaki jab bhi tum...",
+    body: `Sweetie,
+
+Ye website aur ye har ek letter sirf aur sirf tumhare chehre par ek pyaari si smile laane ke liye banaya hai.
+
+Taaki jab bhi tum kabhi low feel karo ya udas ho, tum yahan aakar padh sako ki koi hai jo tumse bepanah pyaar karta hai aur hamesha tumhare saath khada hai.
+
+Always yours, in every moment. 
+
+- Harshit 💖💍`,
   },
 ];

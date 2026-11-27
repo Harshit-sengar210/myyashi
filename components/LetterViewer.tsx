@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
-import { ChevronLeft, ChevronRight, X, Heart, Sparkles, Calendar, BookOpen } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Heart, Calendar, BookOpen, Sparkles, MailOpen, Lock } from "lucide-react";
 import { LoveLetter, LetterLanguage, letters as allLetters } from "@/data/letters";
 
 export default function LetterViewer() {
@@ -22,11 +22,10 @@ export default function LetterViewer() {
   const triggerConfetti = (id: string, e?: React.MouseEvent) => {
     setHasLiked((prev) => ({ ...prev, [id]: true }));
 
-    // Heart shaped & romantic colored confetti burst
     confetti({
-      particleCount: 50,
-      spread: 70,
-      origin: { y: 0.7 },
+      particleCount: 55,
+      spread: 75,
+      origin: { y: 0.65 },
       colors: ["#E11D48", "#FBCFE8", "#F5D0A9", "#FFF1F2", "#C4B5FD"],
       shapes: ["circle"],
       scalar: 1.2,
@@ -75,15 +74,22 @@ export default function LetterViewer() {
   };
 
   const filterChips: { id: LetterLanguage; label: string }[] = [
-    { id: "all", label: "All (3)" },
-    { id: "hinglish", label: "Hinglish" },
-    { id: "hindi", label: "हिंदी" },
-    { id: "english", label: "English" },
+    { id: "all", label: `All Memories (${allLetters.length})` },
+    { id: "hinglish", label: "Special Memories" },
+    { id: "hindi", label: "दिल की बात" },
+    { id: "special", label: "For Sweetie 🎁" },
   ];
 
   return (
-    <div className="w-full">
-      {/* Language Filter Chips */}
+    <div className="w-full pb-10">
+      {/* Intro Subtext */}
+      <div className="mb-4 text-center">
+        <p className="text-xs text-pink-soft/80 font-poppins">
+          Hamari secret timeline ke pyare kisse... tap karke pura padhein 💌
+        </p>
+      </div>
+
+      {/* Language / Category Filter Chips */}
       <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-5 no-scrollbar">
         {filterChips.map((chip) => {
           const isActive = activeFilter === chip.id;
@@ -105,70 +111,69 @@ export default function LetterViewer() {
         })}
       </div>
 
-      {/* Stack of Sealed Envelopes */}
+      {/* Stack of Sealed Envelopes with Teaser / Little Text */}
       <div className="grid grid-cols-1 gap-4">
         {filteredLetters.map((letter, index) => {
-          const isHindi = letter.language === "hindi";
-
           return (
             <motion.div
               key={letter.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.4 }}
+              transition={{ delay: index * 0.08, duration: 0.4 }}
               onClick={() => setSelectedLetter(letter)}
               className="cursor-pointer group"
             >
-              {/* Envelope Body with 3D feel */}
-              <div className="relative rounded-3xl p-5 glass-card bg-gradient-to-br from-[#2b1043]/90 via-[#1e0a30]/80 to-[#120420]/90 border border-pink-soft/25 shadow-glass group-hover:border-rose-deep/50 group-hover:shadow-glow transition-all duration-300 overflow-hidden">
+              {/* Envelope Body with 3D feel and Sealed Look */}
+              <div className="relative rounded-3xl p-5 glass-card bg-gradient-to-br from-[#2b1043]/95 via-[#1e0a30]/85 to-[#120420]/95 border border-pink-soft/25 shadow-glass group-hover:border-rose-deep/60 group-hover:shadow-glow transition-all duration-300 overflow-hidden">
                 {/* Envelope Flap Accent Lines */}
-                <div className="absolute top-0 left-0 right-0 h-10 border-b border-white/10 bg-white/[0.03] rounded-t-3xl" />
+                <div className="absolute top-0 left-0 right-0 h-10 border-b border-white/10 bg-white/[0.04] rounded-t-3xl pointer-events-none" />
 
-                {/* Wax Heart Seal in Center */}
-                <div className="flex items-center justify-between mb-4 relative z-10">
-                  <div className="flex items-center gap-2">
+                {/* Top Row: Wax Seal & Badge / Date */}
+                <div className="flex items-center justify-between mb-3 relative z-10">
+                  <div className="flex items-center gap-2.5">
                     {/* Wax Stamp */}
                     <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-deep via-rose-600 to-pink-soft flex items-center justify-center shadow-[0_2px_12px_rgba(225,29,72,0.6)] border border-pink-200/40 group-hover:scale-110 transition-transform">
                       <Heart className="w-5 h-5 text-white fill-white" />
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase tracking-wider font-poppins px-2 py-0.5 rounded-full bg-white/10 text-pink-soft">
-                        {letter.language}
+                      <span className="text-[10px] font-semibold tracking-wider font-poppins px-2.5 py-0.5 rounded-full bg-rose-500/20 text-pink-200 border border-rose-400/30">
+                        {letter.badge || "Secret 💌"}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1 text-[11px] font-poppins text-pink-soft/60">
+                  <div className="flex items-center gap-1 text-[11px] font-poppins text-pink-soft/70">
                     <Calendar className="w-3 h-3" />
                     <span>{letter.date}</span>
                   </div>
                 </div>
 
-                {/* Letter Title & Short Preview */}
-                <div className="relative z-10">
-                  <h3
-                    className={`text-lg font-bold text-blush group-hover:text-rose-200 transition-colors ${
-                      isHindi ? "font-hindi" : "font-playfair"
-                    }`}
-                  >
+                {/* Letter Title & Little Text Teaser */}
+                <div className="relative z-10 pt-1">
+                  <h3 className="text-base sm:text-lg font-bold text-blush group-hover:text-rose-200 transition-colors font-playfair flex items-center gap-2">
                     {letter.title}
                   </h3>
-                  <p
-                    className={`text-xs text-blush/70 mt-1.5 line-clamp-2 leading-relaxed ${
-                      isHindi ? "font-hindi" : "font-poppins"
-                    }`}
-                  >
-                    {letter.preview}
-                  </p>
+                  {letter.hindiTitle && (
+                    <p className="text-[12px] text-pink-300/90 font-hindi mt-0.5">
+                      {letter.hindiTitle}
+                    </p>
+                  )}
+
+                  {/* Teaser Preview (Little Text) */}
+                  <div className="mt-2.5 p-2.5 rounded-xl bg-black/25 border border-white/5">
+                    <p className="text-xs text-blush/80 line-clamp-2 leading-relaxed font-poppins italic">
+                      "{letter.preview}"
+                    </p>
+                  </div>
                 </div>
 
-                {/* Bottom Prompt */}
-                <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-[11px] font-poppins text-pink-soft/70">
-                  <span className="flex items-center gap-1 group-hover:text-gold-accent transition-colors">
-                    <BookOpen className="w-3.5 h-3.5" /> Tap to open letter
+                {/* Bottom Prompt: Open to Read Full Message */}
+                <div className="mt-3.5 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px] font-poppins text-pink-soft/80">
+                  <span className="flex items-center gap-1.5 text-rose-300 group-hover:text-gold-accent transition-colors font-medium">
+                    <MailOpen className="w-3.5 h-3.5" /> Tap to open full letter
                   </span>
-                  <span className="text-rose-400 group-hover:translate-x-1 transition-transform">
-                    ➔
+                  <span className="text-xs text-rose-400 group-hover:translate-x-1 transition-transform font-bold">
+                    Open ➔
                   </span>
                 </div>
               </div>
@@ -177,7 +182,7 @@ export default function LetterViewer() {
         })}
       </div>
 
-      {/* Fullscreen Expanded Letter Modal with 3D Flip & Paper Texture */}
+      {/* Fullscreen Expanded Letter Modal with 3D Flip & Parchment Texture */}
       <AnimatePresence>
         {selectedLetter && (
           <motion.div
@@ -189,23 +194,22 @@ export default function LetterViewer() {
             onTouchEnd={handleTouchEnd}
           >
             <motion.div
-              initial={{ scale: 0.85, y: 50, rotateX: 25 }}
+              initial={{ scale: 0.85, y: 50, rotateX: 20 }}
               animate={{ scale: 1, y: 0, rotateX: 0 }}
-              exit={{ scale: 0.85, y: 50, rotateX: 25 }}
+              exit={{ scale: 0.85, y: 50, rotateX: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-[400px] max-h-[85vh] rounded-[32px] overflow-hidden flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.8)] border border-pink-soft/40"
+              className="relative w-full max-w-[400px] max-h-[85vh] rounded-[32px] overflow-hidden flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.85)] border border-pink-soft/40"
               style={{
-                // Warm vintage parchment / paper texture background
                 background: "linear-gradient(135deg, #FFF9F2 0%, #FFF2E8 50%, #FEECE2 100%)",
-                color: "#2C1810", // Elegant deep ink color
+                color: "#2C1810",
               }}
             >
               {/* Paper Top Navigation Bar */}
               <div className="flex items-center justify-between px-5 pt-4 pb-2 border-b border-amber-900/10">
                 <div className="flex items-center gap-2">
                   <span className="text-rose-deep text-lg">💌</span>
-                  <span className="text-xs uppercase tracking-widest font-poppins text-amber-900/70 font-semibold">
-                    {selectedLetter.language}
+                  <span className="text-[11px] uppercase tracking-widest font-poppins text-amber-900/80 font-bold">
+                    {selectedLetter.badge || "Personal Memory"}
                   </span>
                 </div>
 
@@ -225,13 +229,15 @@ export default function LetterViewer() {
               {/* Scrollable Letter Body */}
               <div className="flex-1 overflow-y-auto px-6 py-5 select-text">
                 {/* Title */}
-                <h2
-                  className={`text-2xl sm:text-3xl font-bold text-amber-950 mb-1 ${
-                    selectedLetter.language === "hindi" ? "font-hindi" : "font-playfair"
-                  }`}
-                >
+                <h2 className="text-xl sm:text-2xl font-bold text-amber-950 mb-1 font-playfair">
                   {selectedLetter.title}
                 </h2>
+
+                {selectedLetter.hindiTitle && (
+                  <p className="text-sm font-hindi text-rose-800/80 mb-2">
+                    {selectedLetter.hindiTitle}
+                  </p>
+                )}
 
                 <p className="text-[11px] font-poppins text-amber-800/60 mb-5 flex items-center gap-1">
                   <Calendar className="w-3 h-3" /> {selectedLetter.date}
@@ -244,11 +250,11 @@ export default function LetterViewer() {
                       key={pIdx}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.15 + pIdx * 0.1, duration: 0.4 }}
-                      className={`leading-relaxed ${
+                      transition={{ delay: 0.15 + pIdx * 0.08, duration: 0.4 }}
+                      className={`leading-relaxed text-amber-950 font-medium ${
                         selectedLetter.language === "hindi"
-                          ? "font-hindi text-base sm:text-lg text-amber-950"
-                          : "font-dancing text-xl sm:text-2xl text-amber-950 font-medium"
+                          ? "font-hindi text-base sm:text-lg"
+                          : "font-dancing text-xl sm:text-2xl"
                       }`}
                     >
                       {paragraph}
@@ -275,7 +281,7 @@ export default function LetterViewer() {
                     />
                     <span>
                       {hasLiked[selectedLetter.id]
-                        ? "Mujhe bahut pasand aaya! ❤️"
+                        ? "Mujhe bohot pasand aaya! ❤️"
                         : "💖 Mujhe pasand aaya"}
                     </span>
                   </motion.button>
