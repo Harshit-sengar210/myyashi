@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Pause, Mic, Sparkles, Volume2, Upload, Check, Music } from "lucide-react";
+import { Play, Pause, Mic, Sparkles, Volume2, Upload, Check, Music, Heart } from "lucide-react";
 import { APP_CONFIG } from "@/data/config";
 import { VOICE_LYRICS } from "@/data/voice";
 
@@ -17,6 +17,7 @@ export default function VoiceNotePlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const activeLineRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     // Check if voice.mp3 is valid
@@ -45,6 +46,16 @@ export default function VoiceNotePlayer() {
       stopPlayback();
     };
   }, []);
+
+  // Auto-scroll active lyric smoothly into view so it never gets cut off by bottom navbar
+  useEffect(() => {
+    if (activeLineRef.current && isPlaying) {
+      activeLineRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [activeLyricId, isPlaying]);
 
   const stopPlayback = () => {
     setIsPlaying(false);
@@ -108,12 +119,14 @@ export default function VoiceNotePlayer() {
     25, 45, 70, 35, 85, 60, 40, 95, 80, 50, 75, 90, 65, 45, 80, 90, 55, 35, 70, 85, 45, 60, 30, 20
   ];
 
+  const currentLyricObj = VOICE_LYRICS.find((l) => l.id === activeLyricId) || VOICE_LYRICS[0];
+
   return (
-    <div className="w-full flex flex-col items-center my-4">
+    <div className="w-full flex flex-col items-center my-2 pb-24">
       {/* Voice Note Player Card */}
-      <div className="w-full rounded-3xl glass-card-rose p-6 border border-pink-soft/30 backdrop-blur-2xl shadow-glow text-center relative overflow-hidden">
+      <div className="w-full rounded-3xl glass-card-rose p-5 sm:p-6 border border-pink-soft/30 backdrop-blur-2xl shadow-glow text-center relative overflow-hidden">
         {/* Top Header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-2xl bg-white/10 text-rose-400">
               <Mic className="w-4 h-4" />
@@ -142,7 +155,7 @@ export default function VoiceNotePlayer() {
         </div>
 
         {/* Animated Waveform Visualizer */}
-        <div className="flex items-center justify-center gap-1.5 h-20 my-3 px-2">
+        <div className="flex items-center justify-center gap-1.5 h-16 my-2 px-2">
           {waveformBars.map((baseHeight, idx) => {
             const isPassed = (idx / waveformBars.length) * 100 <= (currentSec / 45) * 100;
 
@@ -153,9 +166,9 @@ export default function VoiceNotePlayer() {
                   isPlaying
                     ? {
                         height: [
-                          `${Math.max(12, baseHeight * 0.4)}%`,
+                          `${Math.max(14, baseHeight * 0.35)}%`,
                           `${baseHeight}%`,
-                          `${Math.max(12, baseHeight * 0.6)}%`,
+                          `${Math.max(14, baseHeight * 0.55)}%`,
                         ],
                       }
                     : { height: `${baseHeight * 0.4}%` }
@@ -177,7 +190,7 @@ export default function VoiceNotePlayer() {
         </div>
 
         {/* Progress Bar & Time */}
-        <div className="flex items-center justify-between text-[11px] font-poppins text-pink-soft/70 px-1 mb-4">
+        <div className="flex items-center justify-between text-[11px] font-poppins text-pink-soft/70 px-1 mb-3">
           <span>{formattedTime}</span>
           <span>{duration}</span>
         </div>
@@ -187,20 +200,49 @@ export default function VoiceNotePlayer() {
           onClick={togglePlay}
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.92 }}
-          className="w-16 h-16 mx-auto rounded-full bg-gradient-to-tr from-rose-deep to-pink-500 text-white flex items-center justify-center shadow-glow border border-pink-200/50 min-h-[44px]"
+          className="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-full bg-gradient-to-tr from-rose-deep to-pink-500 text-white flex items-center justify-center shadow-glow border border-pink-200/50 min-h-[44px]"
         >
           {isPlaying ? (
-            <Pause className="w-7 h-7 fill-white" />
+            <Pause className="w-6 h-6 sm:w-7 sm:h-7 fill-white" />
           ) : (
-            <Play className="w-7 h-7 fill-white ml-0.5" />
+            <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-white ml-0.5" />
           )}
         </motion.button>
 
-        <p className="font-poppins text-xs text-blush/90 font-medium mt-4">
+        <p className="font-poppins text-xs text-blush/90 font-medium mt-3">
           {isPlaying
             ? "Reading heartfelt lines for Sweetie... 💖"
             : "Tap play to experience the poetry ✨"}
         </p>
+
+        {/* Spotlight Active Lyric (Floating animation on screen) */}
+        <AnimatePresence mode="wait">
+          {isPlaying && (
+            <motion.div
+              key={activeLyricId}
+              initial={{ opacity: 0, y: 15, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -15, scale: 0.95 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+              className="mt-4 p-4 rounded-2xl bg-gradient-to-br from-rose-950/80 via-purple-950/70 to-pink-950/80 border-2 border-rose-400/60 shadow-[0_0_25px_rgba(225,29,72,0.45)] text-center relative overflow-hidden"
+            >
+              <div className="absolute top-2 right-2 text-rose-400/30">
+                <Heart className="w-6 h-6 fill-rose-500/20" />
+              </div>
+
+              <span className="text-[10px] font-poppins uppercase tracking-wider text-rose-300 font-semibold mb-1 block">
+                Now Singing ✨
+              </span>
+
+              <p className="font-playfair text-base sm:text-lg font-bold text-white drop-shadow-md">
+                "{currentLyricObj.hinglish}"
+              </p>
+              <p className="font-hindi text-sm text-gold-accent mt-1 drop-shadow">
+                {currentLyricObj.hindi}
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Upload Harshit's Real Voice Recording */}
         <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-center gap-2">
@@ -224,35 +266,36 @@ export default function VoiceNotePlayer() {
           </button>
         </div>
 
-        {/* Romantic Lyrics Display */}
-        <div className="mt-5 text-left space-y-2.5 max-h-56 overflow-y-auto px-1">
+        {/* All Romantic Lyrics - Fully Visible on Screen with Smooth Scroll */}
+        <div className="mt-5 text-left space-y-2.5 max-h-[320px] overflow-y-auto px-1 pb-4 no-scrollbar">
           {VOICE_LYRICS.map((line) => {
             const isCurrent = activeLyricId === line.id && isPlaying;
 
             return (
               <motion.div
                 key={line.id}
+                ref={isCurrent ? activeLineRef : null}
                 animate={{
-                  scale: isCurrent ? 1.03 : 0.98,
-                  opacity: isCurrent ? 1 : 0.45,
+                  scale: isCurrent ? 1.02 : 1,
+                  opacity: isCurrent ? 1 : 0.6,
                 }}
-                transition={{ duration: 0.2 }}
-                className={`p-3 rounded-2xl transition-all border ${
+                transition={{ duration: 0.25 }}
+                className={`p-3.5 rounded-2xl transition-all border ${
                   isCurrent
-                    ? "bg-rose-deep/30 border-pink-soft/50 shadow-glow"
-                    : "bg-white/5 border-transparent"
+                    ? "bg-rose-900/60 border-rose-400 shadow-[0_0_15px_rgba(225,29,72,0.5)]"
+                    : "bg-white/5 border-white/10"
                 }`}
               >
                 <p
-                  className={`font-playfair text-sm sm:text-base leading-snug ${
-                    isCurrent ? "text-white font-bold" : "text-blush/70"
+                  className={`font-playfair text-sm sm:text-base leading-snug transition-colors ${
+                    isCurrent ? "text-white font-bold" : "text-blush/80"
                   }`}
                 >
                   "{line.hinglish}"
                 </p>
                 <p
-                  className={`font-hindi text-xs mt-0.5 ${
-                    isCurrent ? "text-gold-accent font-medium" : "text-gold-accent/40"
+                  className={`font-hindi text-xs sm:text-sm mt-1 transition-colors ${
+                    isCurrent ? "text-amber-200 font-medium" : "text-amber-200/50"
                   }`}
                 >
                   {line.hindi}
