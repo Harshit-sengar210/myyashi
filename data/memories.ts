@@ -4,50 +4,50 @@ export interface MemoryItem {
   title: string;
   hindiTitle?: string;
   text: string;
-  image?: string; // e.g. /images/memory1.jpg
+  image?: string;
   badge: string;
-  rotation?: number; // Polaroid rotation in deg
+  rotation?: number;
 }
 
 export const memoriesData: MemoryItem[] = [
   {
     id: "mem-1",
-    date: "First Conversation",
+    date: "First Meeting • 12 Nov 2026",
     title: "Jab Pehli Baar Baat Hui",
-    hindiTitle: "एक नई और ख़ूबसूरत शुरुआत 🌸",
-    text: "Pata nahi tha ki ek aam si baat cheet itni special ban jayegi. Pehli hi baatcheet me laga ki tum kitni pyaari aur real ho.",
+    hindiTitle: "विशाल मेगा मार्ट वाली पहली मुलाक़ात 🌸",
+    text: "Vishal Mega Mart me mile the jab... jab tumko pehli baar dekha tha, sach me bohot cute lag rahi thi tum. I really like you, Sweetie! 💖",
     image: "/images/memory1.jpg",
-    badge: "Day One",
+    badge: "First Sight ✨",
     rotation: -2,
   },
   {
     id: "mem-2",
-    date: "Midnight Talks",
-    title: "Late Night Gup-Shup",
-    hindiTitle: "देर रात की हँसी और बातें 🌙",
-    text: "Raat ke 2 baje bina kisi matlab ke hasna, random topics par baatein karna... those late night talks will always be my absolute favorite.",
+    date: "VIP Restaurant Date",
+    title: "First Time in VIP Restaurant",
+    hindiTitle: "तुम्हें पिज़्ज़ा खाते देखना और वो प्यारी आँखें 🍕",
+    text: "First time VIP restaurant gaye the saath me... seeing you eating pizza and looking at you with your lovely eyes was the sweetest feeling ever. ❤️",
     image: "/images/memory2.jpg",
-    badge: "Unforgettable",
+    badge: "Pizza & Eyes 🍕",
     rotation: 3,
   },
   {
     id: "mem-3",
-    date: "The Inside Jokes",
-    title: "Humara Apna Mazaak",
-    hindiTitle: "वो बातें जो सिर्फ हम समझते हैं 😂",
-    text: "Ek doosre ko dekh kar ya aisi baaton par hasna jo kisi aur ko samajh bhi na aaye. Those silly moments made us closest.",
+    date: "College / School Days",
+    title: "Annual Function",
+    hindiTitle: "एनुअल फंक्शन और वो ख़ास अहसास ✨",
+    text: "Annual function me jaakar laga ki haan, bohot pyaari ho tum. I really want you in my daily life, Yashi! 🌟",
     image: "/images/memory3.jpg",
-    badge: "Pure Fun",
+    badge: "Annual Function 🌺",
     rotation: -3,
   },
   {
     id: "mem-4",
-    date: "Sharing Secrets",
-    title: "Dil Ki Baatein Batana",
-    hindiTitle: "भरोसा और अपनापन 💖",
-    text: "Jab tumne apne dreams, apne fears aur apni baatein share ki... tab realise hua ki ye dosti kitni gehri aur sacchi hai.",
+    date: "Dil Se Dil Tak",
+    title: "Dil Ki Baatein",
+    hindiTitle: "मेरे दिल की सच्ची बात 💖",
+    text: "I like you, Yashi. Sach me, tum mere liye bohot zyada special ho aur hamesha rahogi. 🤍✨",
     image: "/images/memory4.jpg",
-    badge: "Special Bond",
+    badge: "I Like You ❤️",
     rotation: 2,
   },
   {
@@ -55,9 +55,9 @@ export const memoriesData: MemoryItem[] = [
     date: "Right Now & Forever",
     title: "Making This For You",
     hindiTitle: "ये पल सिर्फ तुम्हारे नाम ✨",
-    text: "Tumhe surprise karne ki ye koshish... taaki jab bhi tum low feel karo, ye website dekh kar tumhare chehre par ek pyari si smile aa jaye.",
+    text: "Tumhe surprise karne ki ye koshish... taaki jab bhi tum low feel karo, ye website dekh kar tumhare chehre par ek pyari si smile aa jaye. Always yours, Harshit! 🌸",
     image: "/images/memory5.jpg",
-    badge: "Forever",
+    badge: "Forever 💍",
     rotation: -1,
   },
 ];
