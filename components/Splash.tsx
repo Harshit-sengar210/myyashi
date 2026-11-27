@@ -25,12 +25,6 @@ interface TwinkleStar {
 }
 
 export default function Splash({ onFinish }: SplashProps) {
-  // Phase sequence tracker:
-  // 1: 0-1.5s Initial pulsating heart + twinkling stars
-  // 2: 1.5-3.5s Heartbeat & burst into floating hearts/sparkles
-  // 3: 3.5-6.0s "Welcome" and letter-by-letter "Y-A-S-H-I" bounce
-  // 4: 6.0-7.5s Typewriter Hinglish & Hindi line
-  // 5: 7.5-9.0s Portal light ring expansion & smooth transition
   const [stage, setStage] = useState<number>(1);
   const [stars, setStars] = useState<TwinkleStar[]>([]);
   const [bursts, setBursts] = useState<BurstHeart[]>([]);
@@ -43,7 +37,7 @@ export default function Splash({ onFinish }: SplashProps) {
 
   useEffect(() => {
     // Generate twinkling background stars
-    const generatedStars: TwinkleStar[] = Array.from({ length: 35 }, (_, i) => ({
+    const generatedStars: TwinkleStar[] = Array.from({ length: 30 }, (_, i) => ({
       id: i,
       top: Math.random() * 95,
       left: Math.random() * 95,
@@ -52,22 +46,18 @@ export default function Splash({ onFinish }: SplashProps) {
     }));
     setStars(generatedStars);
 
-    // Timeline Timers
-    // Skip button appears after 2s
     const skipTimer = setTimeout(() => setShowSkip(true), 2000);
 
-    // Stage 2: 1.5s - Heartbeat and burst
     const t2 = setTimeout(() => {
       setStage(2);
-      // Generate 28 burst hearts and sparkles
       const burstItems: BurstHeart[] = Array.from({ length: 28 }, (_, i) => {
         const angle = (i / 28) * 2 * Math.PI + (Math.random() - 0.5) * 0.4;
-        const distance = Math.random() * 140 + 70; // 70px to 210px
+        const distance = Math.random() * 140 + 70;
         const emojis = ["❤️", "💖", "✨", "💕", "🌸", "⭐", "💘"];
         return {
           id: i,
           x: Math.cos(angle) * distance,
-          y: Math.sin(angle) * distance - 40, // Bias slightly upward
+          y: Math.sin(angle) * distance - 40,
           size: Math.floor(Math.random() * 14) + 14,
           emoji: emojis[Math.floor(Math.random() * emojis.length)],
         };
@@ -75,18 +65,14 @@ export default function Splash({ onFinish }: SplashProps) {
       setBursts(burstItems);
     }, 1500);
 
-    // Stage 3: 3.5s - Welcome & Yashi name drop
     const t3 = setTimeout(() => setStage(3), 3500);
 
-    // Stage 4: 6.0s - Typewriter lines
     const t4 = setTimeout(() => {
       setStage(4);
     }, 5800);
 
-    // Stage 5: 7.7s - Portal Expansion
     const t5 = setTimeout(() => setStage(5), 7700);
 
-    // Stage Finish: 9.2s
     const tFinish = setTimeout(() => {
       handleComplete();
     }, 9200);
@@ -131,7 +117,7 @@ export default function Splash({ onFinish }: SplashProps) {
       initial={{ opacity: 1 }}
       animate={{ opacity: stage === 5 ? [1, 1, 0] : 1 }}
       transition={{ duration: 0.9, times: [0, 0.6, 1] }}
-      className="relative w-full h-full min-h-[844px] flex flex-col items-center justify-center bg-night-dark overflow-hidden select-none"
+      className="relative w-full h-full min-h-[844px] flex flex-col items-center justify-center bg-gradient-to-b from-[#FFF5F7] via-[#FFF0F4] to-[#FFE4E8] overflow-hidden select-none text-[#3B122D]"
     >
       {/* Background Falling Petals & Hearts throughout */}
       <FloatingHearts count={22} interactive={false} />
@@ -158,9 +144,9 @@ export default function Splash({ onFinish }: SplashProps) {
               left: `${s.left}%`,
               width: `${s.size}px`,
               height: `${s.size}px`,
-              backgroundColor: "#FFF1F2",
+              backgroundColor: "#E11D48",
               borderRadius: "50%",
-              boxShadow: "0 0 6px rgba(251, 207, 232, 0.8)",
+              boxShadow: "0 0 6px rgba(225, 29, 72, 0.6)",
             }}
           />
         ))}
@@ -172,11 +158,11 @@ export default function Splash({ onFinish }: SplashProps) {
           <motion.button
             onClick={handleComplete}
             initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 0.75, y: 0 }}
+            animate={{ opacity: 0.9, y: 0 }}
             exit={{ opacity: 0 }}
             whileHover={{ opacity: 1, scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="absolute top-6 right-6 z-50 px-3.5 py-1.5 rounded-full glass-card text-xs font-poppins text-pink-soft/90 border border-pink-soft/20 backdrop-blur-md shadow-sm"
+            className="absolute top-6 right-6 z-50 px-3.5 py-1.5 rounded-full bg-white border border-rose-300 text-xs font-poppins text-rose-700 font-semibold shadow-sm"
           >
             Skip ➔
           </motion.button>
@@ -186,7 +172,6 @@ export default function Splash({ onFinish }: SplashProps) {
       {/* 0-3.5s STAGES 1 & 2: Center Heart & Burst */}
       {stage <= 2 && (
         <div className="relative flex items-center justify-center">
-          {/* Central Pulsing & Beating Glowing Heart */}
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={
@@ -195,14 +180,13 @@ export default function Splash({ onFinish }: SplashProps) {
                     scale: [0.85, 1.15, 0.95, 1.1],
                     opacity: 1,
                     filter: [
-                      "drop-shadow(0 0 15px rgba(225,29,72,0.5))",
-                      "drop-shadow(0 0 35px rgba(225,29,72,0.9))",
-                      "drop-shadow(0 0 20px rgba(225,29,72,0.6))",
-                      "drop-shadow(0 0 40px rgba(225,29,72,1))",
+                      "drop-shadow(0 0 15px rgba(225,29,72,0.4))",
+                      "drop-shadow(0 0 35px rgba(225,29,72,0.7))",
+                      "drop-shadow(0 0 20px rgba(225,29,72,0.5))",
+                      "drop-shadow(0 0 40px rgba(225,29,72,0.8))",
                     ],
                   }
                 : {
-                    // Two fast heartbeat contractions right before bursting
                     scale: [1, 1.45, 0.95, 1.6, 0],
                     opacity: [1, 1, 1, 1, 0],
                   }
@@ -217,7 +201,6 @@ export default function Splash({ onFinish }: SplashProps) {
             💖
           </motion.div>
 
-          {/* Burst sparkles & mini hearts in Stage 2 */}
           {stage === 2 && (
             <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
               {bursts.map((b) => (
@@ -235,7 +218,7 @@ export default function Splash({ onFinish }: SplashProps) {
                   style={{
                     position: "absolute",
                     fontSize: `${b.size}px`,
-                    filter: "drop-shadow(0 0 8px rgba(245,208,169,0.8))",
+                    filter: "drop-shadow(0 0 8px rgba(225,29,72,0.4))",
                   }}
                 >
                   {b.emoji}
@@ -249,17 +232,17 @@ export default function Splash({ onFinish }: SplashProps) {
       {/* 3.5s+ STAGES 3, 4, 5: Welcome, Name Drop, and Typewriter */}
       {stage >= 3 && (
         <div className="relative z-20 flex flex-col items-center justify-center px-6 text-center max-w-sm">
-          {/* "Welcome" fade in with blur-to-sharp effect */}
+          {/* "Welcome" */}
           <motion.span
             initial={{ opacity: 0, filter: "blur(12px)", y: 15 }}
             animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-sm tracking-[0.35em] uppercase font-poppins text-pink-soft/90 font-medium mb-3"
+            className="text-xs tracking-[0.35em] uppercase font-poppins text-rose-600 font-bold mb-2"
           >
             Welcome
           </motion.span>
 
-          {/* Name "YASHI" letter by letter with bounce and sparkle */}
+          {/* Name "YASHI" letter by letter */}
           <div className="flex items-center justify-center gap-1.5 my-2">
             {nameLetters.map((letter, idx) => (
               <motion.span
@@ -277,28 +260,27 @@ export default function Splash({ onFinish }: SplashProps) {
                   damping: 14,
                   delay: 0.2 + idx * 0.16,
                 }}
-                className="font-dancing text-6xl sm:text-7xl font-bold bg-gradient-to-r from-pink-soft via-[#F5D0A9] to-rose-deep bg-clip-text text-transparent inline-block drop-shadow-[0_0_20px_rgba(225,29,72,0.7)]"
+                className="font-dancing text-6xl sm:text-7xl font-bold bg-gradient-to-r from-rose-600 via-pink-600 to-rose-700 bg-clip-text text-transparent inline-block drop-shadow-sm"
               >
                 {letter}
               </motion.span>
             ))}
-            {/* Sparkle beside name */}
             <motion.span
               initial={{ scale: 0, opacity: 0, rotate: 0 }}
               animate={{ scale: [0, 1.3, 1], opacity: 1, rotate: 180 }}
               transition={{ delay: 1.1, duration: 0.6 }}
-              className="text-3xl text-gold-accent ml-1 filter drop-shadow-[0_0_8px_#F5D0A9]"
+              className="text-3xl text-amber-500 ml-1 filter drop-shadow-sm"
             >
               ✨
             </motion.span>
           </div>
 
-          {/* Glowing divider line */}
+          {/* Divider line */}
           <motion.div
             initial={{ scaleX: 0, opacity: 0 }}
             animate={{ scaleX: 1, opacity: 1 }}
             transition={{ delay: 1.2, duration: 0.7 }}
-            className="w-24 h-[1.5px] bg-gradient-to-r from-transparent via-rose-deep to-transparent my-4"
+            className="w-24 h-[1.5px] bg-gradient-to-r from-transparent via-rose-400 to-transparent my-3"
           />
 
           {/* Hinglish Typewriter line */}
@@ -307,48 +289,30 @@ export default function Splash({ onFinish }: SplashProps) {
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="font-poppins text-sm sm:text-base text-blush/90 font-medium leading-relaxed"
+                className="font-poppins text-sm sm:text-base text-rose-950 font-semibold leading-relaxed"
               >
                 {displayedHinglish}
                 <motion.span
                   animate={{ opacity: [0, 1, 0] }}
                   transition={{ duration: 0.7, repeat: Infinity }}
-                  className="inline-block w-1.5 h-4 bg-rose-deep ml-1 rounded-sm align-middle"
+                  className="inline-block w-1.5 h-4 bg-rose-600 ml-1 rounded-sm align-middle"
                 />
               </motion.p>
             )}
 
-            {/* Hindi line below */}
-            <AnimatePresence>
-              {showHindi && (
-                <motion.p
-                  initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  transition={{ duration: 0.8 }}
-                  className="font-hindi text-base sm:text-lg text-gold-accent mt-2 font-normal drop-shadow-[0_0_10px_rgba(245,208,169,0.5)]"
-                >
-                  क्योंकि तुम खास हो ✨
-                </motion.p>
-              )}
-            </AnimatePresence>
+            {showHindi && (
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="font-hindi text-sm text-rose-700 font-medium mt-1"
+              >
+                तुम्हारी एक मुस्कान मेरे लिए सब कुछ है 🌸
+              </motion.p>
+            )}
           </div>
         </div>
       )}
-
-      {/* 7.5-9.0s STAGE 5: Expanding Glowing Portal Ring */}
-      <AnimatePresence>
-        {stage === 5 && (
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{
-              scale: [0, 8, 26],
-              opacity: [0, 0.8, 1],
-            }}
-            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute z-40 rounded-full w-24 h-24 bg-gradient-to-r from-rose-deep via-pink-soft to-white pointer-events-none blur-xl"
-          />
-        )}
-      </AnimatePresence>
     </motion.div>
   );
 }

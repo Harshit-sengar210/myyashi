@@ -21,14 +21,12 @@ export default function ChatStory() {
   const [isCompleted, setIsCompleted] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
-  // Auto-scroll chat to bottom
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isTyping]);
 
-  // Initial step from "Me"
   useEffect(() => {
     loadStep(0);
   }, []);
@@ -47,7 +45,6 @@ export default function ChatStory() {
     const step = chatStory[stepIdx];
     setIsTyping(true);
 
-    // Simulate typing delay
     setTimeout(() => {
       setIsTyping(false);
       setMessages((prev) => [
@@ -61,59 +58,49 @@ export default function ChatStory() {
         },
       ]);
       setCurrentStepIndex(stepIdx);
-    }, 1200);
+    }, 700);
   };
 
-  const handleReply = (replyText: string, nextStepId: number) => {
-    if (typeof navigator !== "undefined" && navigator.vibrate) {
-      navigator.vibrate(25);
-    }
-
-    // Add Yashi's reply immediately
+  const handleReplyChoice = (replyText: string, hindiText?: string) => {
     setMessages((prev) => [
       ...prev,
       {
         id: `reply-${Date.now()}`,
         sender: "yashi",
         text: replyText,
+        hindiText: hindiText,
         time: "Just now",
       },
     ]);
 
-    // Load next step from "Me"
-    const nextIdx = chatStory.findIndex((s) => s.id === nextStepId);
-    if (nextIdx !== -1) {
-      loadStep(nextIdx);
-    } else {
-      setIsCompleted(true);
-    }
+    setTimeout(() => {
+      loadStep(currentStepIndex + 1);
+    }, 450);
   };
 
   const currentStep = chatStory[currentStepIndex];
-  const replyOptions = currentStep?.replyOptions || [];
 
   return (
-    <div className="w-full flex flex-col items-center my-2">
-      {/* WhatsApp-Style Chat Container */}
-      <div className="w-full rounded-[32px] glass-card border border-pink-soft/30 overflow-hidden shadow-2xl flex flex-col h-[520px] bg-gradient-to-b from-[#1E0933]/90 via-[#150624]/95 to-[#0F031A]">
-        {/* WhatsApp Chat Top Header */}
-        <div className="px-4 py-3 bg-[#240c3c] border-b border-white/10 flex items-center justify-between">
+    <div className="w-full flex flex-col items-center">
+      <div className="w-full max-w-[370px] h-[640px] rounded-[32px] bg-white border border-rose-200/80 shadow-[0_15px_40px_rgba(225,29,72,0.12)] flex flex-col overflow-hidden text-[#3B122D]">
+        {/* WhatsApp Romantic Top Header Bar */}
+        <div className="px-4 py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-deep to-pink-soft flex items-center justify-center text-white font-bold text-sm shadow-glow">
+            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm shadow-sm border border-white/30">
               H
             </div>
             <div>
               <h4 className="font-poppins text-sm font-semibold text-white flex items-center gap-1.5">
                 <span>Harshit 💖</span>
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse" />
               </h4>
-              <span className="text-[10px] font-poppins text-pink-soft/70">
+              <span className="text-[10px] font-poppins text-rose-100">
                 {isTyping ? "typing..." : "online"}
               </span>
             </div>
           </div>
 
-          <div className="text-[11px] font-poppins px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-gold-accent">
+          <div className="text-[11px] font-poppins px-2 py-0.5 rounded-full bg-white/20 border border-white/30 text-white font-medium">
             WhatsApp Story ✨
           </div>
         </div>
@@ -121,7 +108,7 @@ export default function ChatStory() {
         {/* Message Bubble Feed */}
         <div
           ref={scrollRef}
-          className="flex-1 overflow-y-auto p-4 space-y-3.5 select-text"
+          className="flex-1 overflow-y-auto p-4 space-y-3.5 select-text bg-[#FFF8FA]"
         >
           {messages.map((m) => {
             const isMe = m.sender === "me";
@@ -134,84 +121,96 @@ export default function ChatStory() {
                 className={`flex flex-col ${isMe ? "items-start" : "items-end"}`}
               >
                 <div
-                  className={`max-w-[82%] rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm font-poppins leading-relaxed relative shadow-md ${
+                  className={`max-w-[82%] rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm font-poppins leading-relaxed relative shadow-sm ${
                     isMe
-                      ? "bg-white/10 border border-white/15 text-white rounded-tl-sm"
-                      : "bg-rose-deep text-white border border-pink-soft/40 rounded-tr-sm shadow-glow"
+                      ? "bg-white border border-rose-200 text-rose-950 font-medium rounded-tl-sm shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+                      : "bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-tr-sm shadow-md"
                   }`}
                 >
                   <p>{m.text}</p>
                   {m.hindiText && (
-                    <p className="font-hindi text-[11px] text-gold-accent mt-0.5">
+                    <p
+                      className={`font-hindi text-[11px] mt-0.5 ${
+                        isMe ? "text-rose-600 font-semibold" : "text-amber-200"
+                      }`}
+                    >
                       {m.hindiText}
                     </p>
                   )}
 
-                  <div className="flex items-center justify-end gap-1 mt-1 text-[9px] text-pink-soft/60">
+                  <div
+                    className={`flex items-center justify-end gap-1 mt-1 text-[9px] ${
+                      isMe ? "text-rose-950/50" : "text-rose-100"
+                    }`}
+                  >
                     <span>{m.time}</span>
-                    <CheckCheck className="w-3 h-3 text-pink-300" />
+                    <CheckCheck
+                      className={`w-3 h-3 ${isMe ? "text-rose-500" : "text-white"}`}
+                    />
                   </div>
                 </div>
               </motion.div>
             );
           })}
 
-          {/* Typing Indicator Bubble */}
+          {/* Typing Indicator */}
           {isTyping && (
             <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-1 px-3.5 py-2 rounded-2xl bg-white/10 border border-white/10 w-16 text-pink-soft"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex items-center gap-1.5 p-3 rounded-2xl bg-white border border-rose-200 text-rose-500 w-20 shadow-sm"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-pink-soft animate-bounce" />
-              <span className="w-1.5 h-1.5 rounded-full bg-pink-soft animate-bounce delay-150" />
-              <span className="w-1.5 h-1.5 rounded-full bg-pink-soft animate-bounce delay-300" />
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-bounce" />
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-bounce [animation-delay:0.2s]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-bounce [animation-delay:0.4s]" />
             </motion.div>
           )}
 
-          {/* Completed Story Celebration Card */}
+          {/* Completed State */}
           {isCompleted && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="p-4 rounded-2xl glass-card-rose border border-pink-soft/40 text-center my-4"
+              className="p-4 rounded-2xl bg-white border border-rose-300 shadow-sm text-center my-4"
             >
-              <span className="text-3xl mb-1 block">💖</span>
-              <h5 className="font-playfair text-base font-bold text-white">
-                Tumhari Dosti Sabse Anmol Hai
+              <span className="text-2xl">💖✨</span>
+              <h5 className="font-playfair text-base font-bold text-rose-950 mt-1">
+                Aur aisi hi hamari pyari baatein chalti rahengi!
               </h5>
-              <p className="font-hindi text-xs text-gold-accent mt-1">
-                हमेशा ऐसे ही मुस्कुराती रहना Sweetie ✨
+              <p className="font-hindi text-xs text-rose-700 font-medium mt-1">
+                हर्षित हमेशा तुम्हारी हर बात सुनने के लिए यहाँ है...
               </p>
             </motion.div>
           )}
         </div>
 
-        {/* Yashi's Interactive Reply Buttons Bar */}
-        <div className="p-3 bg-[#1B0B2E]/90 border-t border-white/10">
-          {!isTyping && replyOptions.length > 0 && !isCompleted ? (
+        {/* Bottom Interactive Reply Action Bar */}
+        <div className="p-3 bg-white border-t border-rose-200 shadow-sm">
+          {!isCompleted && currentStep && currentStep.replyOptions && (
             <div className="space-y-2">
-              <span className="text-[10px] font-poppins text-pink-soft/70 block px-1">
-                Choose Yashi's reply 👇
+              <span className="text-[10px] font-poppins text-rose-600 font-semibold block text-center uppercase tracking-wider">
+                Yashi's Turn to Reply 🌸
               </span>
               <div className="flex flex-col gap-1.5">
-                {replyOptions.map((opt, i) => (
+                {currentStep.replyOptions.map((choice, cIdx) => (
                   <motion.button
-                    key={i}
-                    onClick={() => handleReply(opt.text, opt.nextStepId)}
+                    key={cIdx}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
-                    className="w-full text-left px-3.5 py-2 rounded-xl glass-card border border-rose-deep/30 text-xs font-poppins text-blush hover:text-white hover:bg-rose-deep/20 flex items-center justify-between min-h-[44px]"
+                    onClick={() => handleReplyChoice(choice.text)}
+                    className="w-full text-left px-3.5 py-2.5 rounded-xl bg-rose-50/80 hover:bg-rose-100 border border-rose-200 text-xs font-poppins text-rose-950 font-semibold flex items-center justify-between min-h-[44px] transition-colors shadow-sm"
                   >
-                    <span>{opt.text}</span>
-                    <Send className="w-3.5 h-3.5 text-rose-400" />
+                    <span>{choice.text}</span>
+                    <Send className="w-3.5 h-3.5 text-rose-500 ml-2 shrink-0" />
                   </motion.button>
                 ))}
               </div>
             </div>
-          ) : (
-            <div className="text-center py-2 text-xs font-poppins text-pink-soft/50">
-              {isCompleted ? "End of story ✨" : "Main is typing a reply..."}
+          )}
+
+          {isCompleted && (
+            <div className="text-center py-2 text-xs font-poppins text-rose-700 font-semibold">
+              Chat ended with love 💕
             </div>
           )}
         </div>

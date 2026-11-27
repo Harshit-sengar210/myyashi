@@ -59,7 +59,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
     title: "For Yashi 💖",
   },
 };
@@ -74,18 +74,18 @@ export default function RootLayout({
       lang="en"
       className={`${playfair.variable} ${poppins.variable} ${dancingScript.variable} ${tiroHindi.variable}`}
     >
-      <body className="min-h-screen bg-night-dark text-blush antialiased flex items-center justify-center p-0 sm:p-4 selection:bg-rose-deep selection:text-white safe-top safe-bottom">
-        {/* Ambient background glow effects for desktop view */}
+      <body className="min-h-screen bg-[#FFF0F3] text-[#3B122D] antialiased flex items-center justify-center p-0 sm:p-4 selection:bg-rose-deep selection:text-white safe-top safe-bottom">
+        {/* Ambient romantic pastel glow effects for desktop view */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden hidden sm:block">
-          <div className="absolute top-1/4 left-1/2 -translate-x-[350px] w-96 h-96 bg-rose-deep/20 rounded-full blur-3xl opacity-50" />
-          <div className="absolute bottom-1/4 right-1/2 translate-x-[350px] w-96 h-96 bg-lavender/15 rounded-full blur-3xl opacity-50" />
+          <div className="absolute top-1/4 left-1/2 -translate-x-[380px] w-[450px] h-[450px] bg-rose-200/60 rounded-full blur-3xl opacity-60" />
+          <div className="absolute bottom-1/4 right-1/2 translate-x-[380px] w-[450px] h-[450px] bg-pink-200/60 rounded-full blur-3xl opacity-60" />
         </div>
 
         {/* Centered Phone Container (max-width 430px, mobile 390x844 responsive, notch & dynamic island safe area) */}
-        <main className="relative w-full sm:max-w-[430px] min-h-screen sm:min-h-[844px] sm:max-h-[920px] sm:h-[844px] sm:rounded-[40px] sm:border sm:border-pink-soft/20 bg-gradient-to-b from-[#1B0B2E] via-[#2A1045] to-[#160626] sm:shadow-[0_0_50px_rgba(225,29,72,0.25)] flex flex-col overflow-hidden">
+        <main className="relative w-full sm:max-w-[430px] min-h-screen sm:min-h-[844px] sm:max-h-[920px] sm:h-[844px] sm:rounded-[40px] sm:border sm:border-rose-200/60 bg-gradient-to-b from-[#FFF5F7] via-[#FFF0F4] to-[#FFE4E8] sm:shadow-[0_15px_50px_rgba(225,29,72,0.15)] flex flex-col overflow-hidden text-[#3B122D]">
           {/* Subtle phone notch/dynamic island decoration visible on desktop container */}
           <div className="hidden sm:flex justify-center pt-3 pb-1 z-50">
-            <div className="w-28 h-5 bg-black/40 backdrop-blur-md rounded-full border border-white/5" />
+            <div className="w-28 h-5 bg-rose-950/10 backdrop-blur-md rounded-full border border-rose-300/30" />
           </div>
 
           {/* Scrollable Screen Body with safe area padding */}

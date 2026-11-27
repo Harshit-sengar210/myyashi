@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #1b0b2e;
-  --foreground: #fff1f2;
+  --background: #FFF5F7;
+  --foreground: #3B122D;
 }
 
 /* iOS Safe Area Viewport insets */
@@ -28,28 +28,29 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Glassmorphism utility helpers */
+/* Light Glassmorphism utility helpers */
 .glass-card {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(251, 113, 133, 0.25);
+  box-shadow: 0 10px 30px 0 rgba(225, 29, 72, 0.08);
 }
 
 .glass-card-rose {
-  background: rgba(225, 29, 72, 0.12);
+  background: linear-gradient(135deg, rgba(255, 241, 242, 0.85) 0%, rgba(255, 228, 230, 0.8) 100%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(251, 207, 232, 0.25);
-  box-shadow: 0 8px 32px 0 rgba(225, 29, 72, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  box-shadow: 0 10px 30px 0 rgba(225, 29, 72, 0.12);
 }
 
 .glass-card-gold {
-  background: rgba(245, 208, 169, 0.08);
+  background: rgba(254, 243, 199, 0.75);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(245, 208, 169, 0.25);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  box-shadow: 0 10px 30px 0 rgba(217, 119, 6, 0.08);
 }
 
 /* Hide scrollbar for tabs */
@@ -69,9 +70,9 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(251, 207, 232, 0.2);
+  background: rgba(244, 63, 94, 0.25);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(251, 207, 232, 0.4);
+  background: rgba(244, 63, 94, 0.45);
 }

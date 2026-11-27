@@ -27,7 +27,7 @@ export default function SubpageLayout({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="relative min-h-full flex flex-col justify-between overflow-x-hidden selection:bg-rose-deep selection:text-white"
+      className="relative min-h-full flex flex-col justify-between overflow-x-hidden selection:bg-rose-deep selection:text-white text-[#3B122D]"
     >
       <FloatingHearts count={10} interactive={false} />
 
@@ -36,7 +36,7 @@ export default function SubpageLayout({
         <div className="flex items-center justify-between mb-6">
           <Link
             href="/"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-card border border-pink-soft/20 text-xs font-poppins text-pink-soft hover:text-white transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/80 border border-rose-200 text-xs font-poppins text-rose-800 hover:text-rose-deep transition-all shadow-sm"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back</span>
@@ -48,19 +48,29 @@ export default function SubpageLayout({
         <div className="mb-6">
           <div className="inline-flex items-center gap-2 mb-2">
             <span className="text-2xl">{icon}</span>
-            <h1 className="font-playfair text-2xl sm:text-3xl font-bold text-white tracking-tight">
-              {title}
-            </h1>
+            <span className="text-xs uppercase tracking-widest font-poppins text-rose-500 font-bold">
+              Sweetie's Corner
+            </span>
           </div>
+
+          <h1 className="text-3xl font-bold font-playfair text-[#2B0E21]">
+            {title}
+          </h1>
+
           {hindiTitle && (
-            <p className="font-hindi text-base text-gold-accent">{hindiTitle}</p>
+            <p className="font-hindi text-sm text-rose-800/80 mt-1">
+              {hindiTitle}
+            </p>
           )}
+
+          <div className="w-16 h-1 bg-gradient-to-r from-rose-deep to-pink-soft rounded-full mt-3" />
         </div>
 
-        {/* Content body */}
-        <div className="w-full">{children}</div>
+        {/* Main Content */}
+        <div className="relative z-10">{children}</div>
       </div>
 
+      {/* Floating Bottom Nav */}
       <BottomNav />
     </motion.div>
   );

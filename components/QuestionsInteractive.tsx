@@ -112,8 +112,8 @@ export default function QuestionsInteractive() {
           onClick={() => setActiveTab("quiz")}
           className={`py-2 rounded-xl text-xs font-poppins transition-all flex items-center justify-center gap-1 ${
             activeTab === "quiz"
-              ? "bg-rose-deep text-white font-medium shadow-glow"
-              : "text-pink-soft/70 hover:text-white"
+              ? "bg-rose-deep text-white font-semibold shadow-md"
+              : "text-rose-800 hover:text-rose-950 font-medium"
           }`}
         >
           <span>🎯</span> Quiz
@@ -122,8 +122,8 @@ export default function QuestionsInteractive() {
           onClick={() => setActiveTab("friend")}
           className={`py-2 rounded-xl text-xs font-poppins transition-all flex items-center justify-center gap-1 ${
             activeTab === "friend"
-              ? "bg-rose-deep text-white font-medium shadow-glow"
-              : "text-pink-soft/70 hover:text-white"
+              ? "bg-rose-deep text-white font-semibold shadow-md"
+              : "text-rose-800 hover:text-rose-950 font-medium"
           }`}
         >
           <span>🥺</span> Ek Sawaal
@@ -132,8 +132,8 @@ export default function QuestionsInteractive() {
           onClick={() => setActiveTab("mood")}
           className={`py-2 rounded-xl text-xs font-poppins transition-all flex items-center justify-center gap-1 ${
             activeTab === "mood"
-              ? "bg-rose-deep text-white font-medium shadow-glow"
-              : "text-pink-soft/70 hover:text-white"
+              ? "bg-rose-deep text-white font-semibold shadow-md"
+              : "text-rose-800 hover:text-rose-950 font-medium"
           }`}
         >
           <span>🌸</span> Aaj Ka Mood
@@ -175,11 +175,11 @@ export default function QuestionsInteractive() {
                 animate={{ opacity: 1, x: 0 }}
                 className="mb-5"
               >
-                <h3 className="font-playfair text-xl sm:text-2xl font-bold text-blush leading-snug">
+                <h3 className="font-playfair text-xl sm:text-2xl font-bold text-rose-950 leading-snug">
                   {quizQuestions[currentQIndex].question}
                 </h3>
                 {quizQuestions[currentQIndex].hindiSub && (
-                  <p className="font-hindi text-xs text-gold-accent mt-1">
+                  <p className="font-hindi text-xs text-rose-700 font-semibold mt-1">
                     {quizQuestions[currentQIndex].hindiSub}
                   </p>
                 )}
@@ -198,15 +198,15 @@ export default function QuestionsInteractive() {
                       whileTap={selectedOptionIdx === null ? { scale: 0.98 } : {}}
                       className={`w-full p-3.5 rounded-2xl text-left font-poppins text-xs sm:text-sm flex items-center justify-between transition-all border ${
                         isSelected
-                          ? "bg-rose-deep text-white border-pink-soft shadow-glow"
-                          : "bg-white/5 border-white/10 text-blush hover:border-pink-soft/40 hover:bg-white/10"
+                          ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-md border-rose-300 font-semibold"
+                          : "bg-white border-rose-200 text-rose-950 hover:border-rose-400 hover:bg-rose-50/60 font-medium"
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <span className="text-xl p-1.5 rounded-xl bg-white/10">{option.emoji}</span>
-                        <span className="font-medium">{option.text}</span>
+                        <span className="text-xl p-1.5 rounded-xl bg-rose-50">{option.emoji}</span>
+                        <span>{option.text}</span>
                       </div>
-                      {isSelected && <Sparkles className="w-4 h-4 text-gold-accent animate-spin" />}
+                      {isSelected && <Sparkles className="w-4 h-4 text-amber-200 animate-spin" />}
                     </motion.button>
                   );
                 })}

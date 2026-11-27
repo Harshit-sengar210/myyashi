@@ -2,7 +2,7 @@ export const APP_CONFIG = {
   girlName: "Yashi",
   nickname: "Sweetie",
   friendshipStartDate: "2026-11-12T00:00:00",
-  audioPath: "/audio/song.mp3",
+  audioPath: "/audio/loveyouji.mp3",
   voiceAudioPath: "/audio/voice.mp3",
   // Secret Lock Screen Password & Hints
   secretPassword: "sweetie",

@@ -18,8 +18,8 @@ export default function BottomNav() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 sm:absolute sm:bottom-0 p-3 pb-safe z-50 bg-gradient-to-t from-[#160626] via-[#160626]/95 to-transparent pointer-events-auto">
-      <nav className="max-w-[390px] mx-auto glass-card rounded-full px-2 py-1.5 border border-pink-soft/25 backdrop-blur-2xl flex items-center justify-around shadow-[0_4px_25px_rgba(27,11,46,0.8)]">
+    <div className="fixed bottom-0 left-0 right-0 sm:absolute sm:bottom-0 p-3 pb-safe z-50 bg-gradient-to-t from-[#FFE4E8] via-[#FFE4E8]/95 to-transparent pointer-events-auto">
+      <nav className="max-w-[390px] mx-auto bg-white/85 rounded-full px-2 py-1.5 border border-rose-200/60 backdrop-blur-2xl flex items-center justify-around shadow-[0_8px_30px_rgba(225,29,72,0.12)]">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           const IconComponent = item.icon;
@@ -31,16 +31,16 @@ export default function BottomNav() {
               className="relative min-w-[50px] min-h-[44px] flex flex-col items-center justify-center group"
             >
               <motion.div
-                whileHover={{ scale: 1.15 }}
-                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.12 }}
+                whileTap={{ scale: 0.92 }}
                 className={`flex flex-col items-center gap-0.5 transition-colors ${
                   item.isSecret
                     ? isActive
-                      ? "text-gold-accent font-semibold"
-                      : "text-gold-accent/80 hover:text-gold-accent"
+                      ? "text-amber-600 font-bold"
+                      : "text-amber-600/75 hover:text-amber-600"
                     : isActive
-                    ? "text-rose-deep font-semibold"
-                    : "text-pink-soft/60 hover:text-pink-soft"
+                    ? "text-rose-deep font-bold"
+                    : "text-rose-900/60 hover:text-rose-deep"
                 }`}
               >
                 <div className="relative">
@@ -53,16 +53,12 @@ export default function BottomNav() {
                     <motion.div
                       layoutId="nav-glow"
                       className={`absolute -inset-1 rounded-full blur-sm -z-10 ${
-                        item.isSecret ? "bg-gold-accent/40" : "bg-rose-deep/30"
+                        item.isSecret ? "bg-amber-300/40" : "bg-rose-400/30"
                       }`}
                     />
                   )}
                 </div>
-                <span
-                  className={`text-[9.5px] font-poppins leading-tight ${
-                    isActive ? "font-semibold text-blush" : "font-normal"
-                  }`}
-                >
+                <span className="text-[10px] font-poppins capitalize">
                   {item.label}
                 </span>
               </motion.div>

@@ -23,8 +23,34 @@ export default function MusicPlayer() {
 
     audio.addEventListener("error", errorHandler);
 
+    // Auto-play /audio/loveyouji.mp3 when Home Screen opens
+    audio.play().then(() => {
+      setIsPlaying(true);
+      setHasError(false);
+    }).catch(() => {
+      // Browser autoplay policy might require first user gesture
+    });
+
+    // Custom Event Listeners to pause when sub-modals (like Jaaniye Yahan) play music
+    const handlePauseRequest = () => {
+      audio.pause();
+      setIsPlaying(false);
+    };
+
+    const handleResumeRequest = () => {
+      audio.play().then(() => {
+        setIsPlaying(true);
+        setHasError(false);
+      }).catch(() => {});
+    };
+
+    window.addEventListener("yashi_pause_home_music", handlePauseRequest);
+    window.addEventListener("yashi_resume_home_music", handleResumeRequest);
+
     return () => {
       audio.removeEventListener("error", errorHandler);
+      window.removeEventListener("yashi_pause_home_music", handlePauseRequest);
+      window.removeEventListener("yashi_resume_home_music", handleResumeRequest);
       audio.pause();
     };
   }, []);

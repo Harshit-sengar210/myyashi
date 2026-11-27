@@ -52,10 +52,10 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
   };
 
   return (
-    <div className="relative w-full h-full min-h-[844px] flex flex-col items-center justify-center p-6 text-center bg-night-dark select-none overflow-hidden">
+    <div className="relative w-full h-full min-h-[844px] flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-[#FFF5F7] via-[#FFF0F4] to-[#FFE4E8] select-none overflow-hidden text-[#3B122D]">
       {/* Background ambient orbs */}
-      <div className="absolute w-72 h-72 rounded-full bg-rose-deep/20 blur-3xl -top-12 pointer-events-none" />
-      <div className="absolute w-72 h-72 rounded-full bg-lavender/15 blur-3xl -bottom-12 pointer-events-none" />
+      <div className="absolute w-72 h-72 rounded-full bg-rose-200/50 blur-3xl -top-12 pointer-events-none" />
+      <div className="absolute w-72 h-72 rounded-full bg-pink-200/40 blur-3xl -bottom-12 pointer-events-none" />
 
       <motion.div
         animate={shake ? { x: [-14, 14, -12, 12, -6, 6, 0] } : {}}
@@ -74,23 +74,23 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
             duration: 3,
             ease: "easeInOut",
           }}
-          className="w-20 h-20 mx-auto mb-6 rounded-3xl glass-card-rose border border-pink-soft/40 flex items-center justify-center shadow-glow relative"
+          className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-white border border-rose-300 flex items-center justify-center shadow-[0_8px_25px_rgba(225,29,72,0.15)] relative"
         >
           {isUnlocked ? (
-            <Unlock className="w-10 h-10 text-gold-accent" />
+            <Unlock className="w-10 h-10 text-amber-500" />
           ) : (
-            <Lock className="w-10 h-10 text-pink-soft" />
+            <Lock className="w-10 h-10 text-rose-500" />
           )}
 
           {/* Sparkles around lock */}
           <span className="absolute -top-1 -right-1 text-sm">✨</span>
         </motion.div>
 
-        {/* Title */}
-        <h2 className="font-playfair text-2xl sm:text-3xl font-bold text-white mb-1">
+        {/* Title in Deep Bold Readable Font */}
+        <h2 className="font-playfair text-2xl sm:text-3xl font-bold text-rose-950 mb-1 drop-shadow-sm">
           Sirf Yashi ke liye 🔒
         </h2>
-        <p className="font-hindi text-xs text-gold-accent mb-6">
+        <p className="font-hindi text-sm text-rose-700 font-semibold mb-6">
           पासवर्ड दर्ज करो स्वीटी 🌸
         </p>
 
@@ -105,10 +105,10 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
                 if (errorMsg) setErrorMsg(null);
               }}
               placeholder="Enter secret word..."
-              className="w-full px-4 py-3 rounded-2xl glass-card border border-pink-soft/30 text-white placeholder-pink-soft/40 font-poppins text-sm text-center focus:outline-none focus:border-rose-deep shadow-inner"
+              className="w-full px-4 py-3 rounded-2xl bg-white border-2 border-rose-300 text-rose-950 placeholder-rose-300 font-poppins text-sm text-center font-medium focus:outline-none focus:border-rose-500 shadow-sm"
               autoFocus
             />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-pink-soft/50">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-rose-400">
               <Key className="w-4 h-4" />
             </div>
           </div>
@@ -117,7 +117,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
             type="submit"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.96 }}
-            className="w-full py-3 rounded-2xl bg-gradient-to-r from-rose-deep to-pink-600 text-white font-poppins text-xs font-semibold shadow-glow border border-pink-200/40 min-h-[44px] flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 text-white font-poppins text-xs font-bold shadow-[0_8px_25px_rgba(225,29,72,0.35)] border border-pink-200 min-h-[44px] flex items-center justify-center gap-2"
           >
             <span>Unlock My Surprise</span>
             <span>💖</span>
@@ -131,7 +131,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="mt-3 p-2.5 rounded-xl bg-rose-deep/30 border border-rose-deep/50 text-xs text-rose-200 font-poppins"
+              className="mt-3 p-2.5 rounded-xl bg-white border border-rose-400 text-xs text-rose-600 font-poppins font-semibold shadow-sm"
             >
               {errorMsg}
             </motion.div>
@@ -143,9 +143,9 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
           <button
             type="button"
             onClick={() => setShowHint(!showHint)}
-            className="text-[11px] font-poppins text-pink-soft/70 hover:text-white flex items-center justify-center gap-1 mx-auto min-h-[44px]"
+            className="text-xs font-poppins text-rose-700 hover:text-rose-900 font-medium flex items-center justify-center gap-1 mx-auto min-h-[44px]"
           >
-            <HelpCircle className="w-3.5 h-3.5 text-gold-accent" />
+            <HelpCircle className="w-3.5 h-3.5 text-amber-600" />
             <span>{showHint ? "Hide Hint" : "Need a Hint?"}</span>
           </button>
 
@@ -155,7 +155,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
-                className="mt-2 text-[11px] font-poppins text-gold-accent/90 italic"
+                className="mt-2 text-xs font-poppins text-rose-900 font-semibold italic bg-white/70 p-2 rounded-xl border border-rose-200"
               >
                 "{APP_CONFIG.passwordHint}"
               </motion.div>

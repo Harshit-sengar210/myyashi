@@ -13,26 +13,32 @@ export default {
         rose: {
           deep: "#E11D48",
           DEFAULT: "#E11D48",
-        },
-        pink: {
-          soft: "#FBCFE8",
-          DEFAULT: "#FBCFE8",
-        },
-        blush: {
-          DEFAULT: "#FFF1F2",
+          dark: "#BE123C",
           light: "#FFF1F2",
         },
+        pink: {
+          soft: "#FB7185",
+          DEFAULT: "#FB7185",
+          pastel: "#FCE7F3",
+          light: "#FDF2F8",
+        },
+        blush: {
+          DEFAULT: "#3F1D38", // Deep readable romantic text color for light mode
+          light: "#FFF5F7",
+          dark: "#1F0C1B",
+        },
         lavender: {
-          DEFAULT: "#C4B5FD",
-          soft: "#C4B5FD",
+          DEFAULT: "#A855F7",
+          soft: "#F3E8FF",
         },
         gold: {
-          accent: "#F5D0A9",
-          DEFAULT: "#F5D0A9",
+          accent: "#D97706",
+          DEFAULT: "#D97706",
+          light: "#FEF3C7",
         },
         night: {
-          dark: "#1B0B2E",
-          DEFAULT: "#1B0B2E",
+          dark: "#FFF5F7", // Light romantic background
+          DEFAULT: "#FFF5F7",
         },
       },
       fontFamily: {
@@ -46,10 +52,10 @@ export default {
         "4xl": "2rem",
       },
       boxShadow: {
-        glow: "0 0 25px -5px rgba(225, 29, 72, 0.35)",
-        "glow-gold": "0 0 25px -5px rgba(245, 208, 169, 0.4)",
-        "glow-lavender": "0 0 25px -5px rgba(196, 181, 253, 0.35)",
-        glass: "0 8px 32px 0 rgba(27, 11, 46, 0.15)",
+        glow: "0 10px 30px -5px rgba(225, 29, 72, 0.25)",
+        "glow-gold": "0 10px 30px -5px rgba(217, 119, 6, 0.2)",
+        "glow-lavender": "0 10px 30px -5px rgba(168, 85, 247, 0.2)",
+        glass: "0 10px 30px 0 rgba(225, 29, 72, 0.08)",
       },
       backdropBlur: {
         xs: "2px",
