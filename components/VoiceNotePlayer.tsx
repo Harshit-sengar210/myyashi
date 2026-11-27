@@ -2,37 +2,44 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Pause, Mic, Sparkles, Volume2, Upload, Music, Check } from "lucide-react";
+import { Play, Pause, Mic, Sparkles, Volume2, Upload, Check, Music } from "lucide-react";
 import { APP_CONFIG } from "@/data/config";
 import { VOICE_LYRICS } from "@/data/voice";
 
 export default function VoiceNotePlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [useSpeech, setUseSpeech] = useState(true);
   const [currentSec, setCurrentSec] = useState(0);
   const [activeLyricId, setActiveLyricId] = useState(1);
-  const [customAudioUploaded, setCustomAudioUploaded] = useState(false);
-  const [speechSupported, setSpeechSupported] = useState(false);
+  const [hasCustomAudio, setHasCustomAudio] = useState(false);
+  const [duration, setDuration] = useState("0:45");
+  const [formattedTime, setFormattedTime] = useState("0:00");
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      setSpeechSupported(true);
-    }
-
+    // Check if voice.mp3 is valid
     const audio = new Audio(APP_CONFIG.voiceAudioPath);
     audioRef.current = audio;
+
+    const handleLoadedMetadata = () => {
+      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+        const m = Math.floor(audio.duration / 60);
+        const s = Math.floor(audio.duration % 60);
+        setDuration(`${m}:${s < 10 ? "0" : ""}${s}`);
+      }
+    };
 
     const handleEnded = () => {
       stopPlayback();
     };
 
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
     audio.addEventListener("ended", handleEnded);
 
     return () => {
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
       audio.removeEventListener("ended", handleEnded);
       audio.pause();
       stopPlayback();
@@ -42,74 +49,36 @@ export default function VoiceNotePlayer() {
   const stopPlayback = () => {
     setIsPlaying(false);
     setCurrentSec(0);
+    setFormattedTime("0:00");
     setActiveLyricId(1);
     if (timerRef.current) clearInterval(timerRef.current);
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
-  };
-
-  const speakLyrics = () => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-
-    window.speechSynthesis.cancel();
-
-    // Natural spoken poetry text
-    const textToSpeak = `
-      Ham tere pyaar main saara aalam kho baithe... kho baithe...
-      Tum kehte ho ki aise pyaar ko bhool jaao... bhool jaao...
-      Ham tere pyaar main saara aalam kho baithe...
-      Tum kehte ho ki aise pyaar ko bhool jaao...
-      Ham tere pyaar main saara aalam... sirf tum, Sweetie!
-    `;
-
-    const utterance = new SpeechSynthesisUtterance(textToSpeak);
-    utterance.rate = 0.85; // slightly slower romantic pacing
-    utterance.pitch = 1.0;
-
-    // Pick best voice available (Hindi or soft English)
-    const voices = window.speechSynthesis.getVoices();
-    const hindiVoice = voices.find((v) => v.lang.includes("hi") || v.lang.includes("IN"));
-    if (hindiVoice) {
-      utterance.voice = hindiVoice;
-    }
-
-    utterance.onend = () => {
-      stopPlayback();
-    };
-
-    window.speechSynthesis.speak(utterance);
+    if (audioRef.current) audioRef.current.pause();
   };
 
   const togglePlay = async () => {
     if (isPlaying) {
-      if (audioRef.current) audioRef.current.pause();
       stopPlayback();
     } else {
       setIsPlaying(true);
 
-      // If user uploaded their real voice/song or chooses audio
-      if (!useSpeech && audioRef.current) {
+      // Play real audio if present/uploaded
+      if (audioRef.current && hasCustomAudio) {
         try {
           await audioRef.current.play();
         } catch {
           // ignore error
         }
-      } else {
-        // Play real spoken voice via browser speech engine
-        speakLyrics();
-        // Also play background melody softly
-        if (audioRef.current) {
-          audioRef.current.volume = 0.25;
-          audioRef.current.play().catch(() => {});
-        }
       }
 
-      // Synchronize lyric cards
+      // Smooth lyrics progress timer
       let sec = 0;
       timerRef.current = setInterval(() => {
         sec += 0.5;
         setCurrentSec(sec);
+
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        setFormattedTime(`${m}:${s < 10 ? "0" : ""}${s}`);
 
         const match = [...VOICE_LYRICS].reverse().find((l) => sec >= l.timeSec);
         if (match) {
@@ -123,7 +92,6 @@ export default function VoiceNotePlayer() {
     }
   };
 
-  // Allow uploading Harshit's real voice recording right from phone or PC
   const handleUploadVoice = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -131,10 +99,8 @@ export default function VoiceNotePlayer() {
     const url = URL.createObjectURL(file);
     if (audioRef.current) {
       audioRef.current.src = url;
-      audioRef.current.volume = 1.0;
     }
-    setCustomAudioUploaded(true);
-    setUseSpeech(false);
+    setHasCustomAudio(true);
   };
 
   // 24 waveform bars
@@ -144,9 +110,9 @@ export default function VoiceNotePlayer() {
 
   return (
     <div className="w-full flex flex-col items-center my-4">
-      {/* Player Pod */}
+      {/* Voice Note Player Card */}
       <div className="w-full rounded-3xl glass-card-rose p-6 border border-pink-soft/30 backdrop-blur-2xl shadow-glow text-center relative overflow-hidden">
-        {/* Header */}
+        {/* Top Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-2xl bg-white/10 text-rose-400">
@@ -154,7 +120,7 @@ export default function VoiceNotePlayer() {
             </div>
             <div className="text-left">
               <span className="text-[10px] font-poppins uppercase tracking-wider text-pink-soft block">
-                Voice Note for Yashi
+                Poetry & Voice Note
               </span>
               <span className="font-playfair text-sm font-semibold text-white">
                 Ham Tere Pyaar Main 🎙️
@@ -163,19 +129,19 @@ export default function VoiceNotePlayer() {
           </div>
 
           <div className="flex items-center gap-1.5">
-            {customAudioUploaded ? (
+            {hasCustomAudio ? (
               <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-poppins border border-emerald-500/30 flex items-center gap-1">
-                <Check className="w-3 h-3" /> Real Voice
+                <Check className="w-3 h-3" /> Voice Loaded
               </span>
             ) : (
-              <span className="px-2 py-0.5 rounded-full bg-rose-deep/30 text-pink-soft text-[10px] font-poppins border border-rose-deep/40">
-                Spoken Voice 🗣️
+              <span className="px-2 py-0.5 rounded-full bg-white/5 text-pink-soft/80 text-[10px] font-poppins border border-white/10">
+                Poetry Mode ✨
               </span>
             )}
           </div>
         </div>
 
-        {/* Waveform Visualizer */}
+        {/* Animated Waveform Visualizer */}
         <div className="flex items-center justify-center gap-1.5 h-20 my-3 px-2">
           {waveformBars.map((baseHeight, idx) => {
             const isPassed = (idx / waveformBars.length) * 100 <= (currentSec / 45) * 100;
@@ -210,13 +176,13 @@ export default function VoiceNotePlayer() {
           })}
         </div>
 
-        {/* Progress Time */}
+        {/* Progress Bar & Time */}
         <div className="flex items-center justify-between text-[11px] font-poppins text-pink-soft/70 px-1 mb-4">
-          <span>0:{Math.floor(currentSec) < 10 ? `0${Math.floor(currentSec)}` : Math.floor(currentSec)}</span>
-          <span>0:45</span>
+          <span>{formattedTime}</span>
+          <span>{duration}</span>
         </div>
 
-        {/* Play Button */}
+        {/* Big Circular Play / Pause Button */}
         <motion.button
           onClick={togglePlay}
           whileHover={{ scale: 1.08 }}
@@ -231,10 +197,12 @@ export default function VoiceNotePlayer() {
         </motion.button>
 
         <p className="font-poppins text-xs text-blush/90 font-medium mt-4">
-          {isPlaying ? "Speaking & singing for Sweetie..." : "Tap play to hear the spoken lyrics ✨"}
+          {isPlaying
+            ? "Reading heartfelt lines for Sweetie... 💖"
+            : "Tap play to experience the poetry ✨"}
         </p>
 
-        {/* Option to upload Harshit's original audio voice recording */}
+        {/* Upload Harshit's Real Voice Recording */}
         <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-center gap-2">
           <input
             type="file"
@@ -245,15 +213,19 @@ export default function VoiceNotePlayer() {
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="text-[11px] font-poppins text-pink-soft/70 hover:text-white px-3 py-1.5 rounded-full glass-card border border-pink-soft/20 flex items-center gap-1.5 transition-all"
+            className="text-[11px] font-poppins text-pink-soft/80 hover:text-white px-3.5 py-1.5 rounded-full glass-card border border-pink-soft/30 flex items-center gap-1.5 transition-all shadow-sm min-h-[44px]"
           >
             <Upload className="w-3.5 h-3.5 text-gold-accent" />
-            <span>{customAudioUploaded ? "Change Voice File" : "Upload your own audio recording (Optional)"}</span>
+            <span>
+              {hasCustomAudio
+                ? "Recording Added! (Tap to change)"
+                : "Add your voice recording (Optional) 🎙️"}
+            </span>
           </button>
         </div>
 
-        {/* Lyrics synchronization display */}
-        <div className="mt-5 text-left space-y-2 max-h-48 overflow-y-auto px-1">
+        {/* Romantic Lyrics Display */}
+        <div className="mt-5 text-left space-y-2.5 max-h-56 overflow-y-auto px-1">
           {VOICE_LYRICS.map((line) => {
             const isCurrent = activeLyricId === line.id && isPlaying;
 
@@ -265,14 +237,14 @@ export default function VoiceNotePlayer() {
                   opacity: isCurrent ? 1 : 0.45,
                 }}
                 transition={{ duration: 0.2 }}
-                className={`p-2.5 rounded-2xl transition-all border ${
+                className={`p-3 rounded-2xl transition-all border ${
                   isCurrent
                     ? "bg-rose-deep/30 border-pink-soft/50 shadow-glow"
                     : "bg-white/5 border-transparent"
                 }`}
               >
                 <p
-                  className={`font-playfair text-sm leading-snug ${
+                  className={`font-playfair text-sm sm:text-base leading-snug ${
                     isCurrent ? "text-white font-bold" : "text-blush/70"
                   }`}
                 >
